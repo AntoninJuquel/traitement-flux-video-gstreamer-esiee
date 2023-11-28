@@ -14,10 +14,24 @@ int app(int argc, char* argv[])
     gst_init(&argc, &argv);
 
     /* Build the pipeline */
+#if defined(__linux__)
     pipeline =
         gst_parse_launch
-        ("gst-launch-1.0 -v d3d11screencapturesrc ! videoscale ! videorate ! video/x-raw,width=800,height=600,framerate=5/1  ! timeoverlay valignment=top halignment=center shaded-background=true ! tee name=t ! queue ! autovideosink t. ! queue ! videoconvert ! avimux ! filesink location=video.avi t. ! queue ! videoconvert ! openh264enc bitrate=500 ! rtph264pay ! rtpsink address=127.0.0.1 port=5000 ^",
+        ("gst-launch-1.0 -v ximagesrc ! videoscale ! videorate ! video/x-raw,width=800,height=600,framerate=5/1 ! timeoverlay valignment=top halignment=center shaded-background=true ! tee name=t ! queue ! autovideosink t. ! queue ! videoconvert ! avimux ! filesink location=video.avi t. ! queue ! videoconvert ! openh264enc bitrate=500 ! rtph264pay ! udpsink host=127.0.0.1 port=5000",
             NULL);
+#elif defined(__APPLE__)
+    pipeline =
+        gst_parse_launch
+        ("gst-launch-1.0 -v avfvideosrc ! videoscale ! videorate ! video/x-raw,width=800,height=600,framerate=5/1 ! timeoverlay valignment=top halignment=center shaded-background=true ! tee name=t ! queue ! autovideosink t. ! queue ! videoconvert ! avimux ! filesink location=video.avi t. ! queue ! videoconvert ! openh264enc bitrate=500 ! rtph264pay ! udpsink host=127.0.0.1 port=5000",
+            NULL);
+#elif defined(_WIN32)
+    pipeline =
+        gst_parse_launch
+        ("gst-launch-1.0 -v d3d11screencapturesrc ! videoscale ! videorate ! video/x-raw,width=800,height=600,framerate=5/1  ! timeoverlay valignment=top halignment=center shaded-background=true ! tee name=t ! queue ! autovideosink t. ! queue ! videoconvert ! avimux ! filesink location=video.avi t. ! queue ! videoconvert ! openh264enc bitrate=500 ! rtph264pay ! rtpsink address=127.0.0.1 port=5000",
+            NULL);
+#else
+    #error "Unsupported platform"
+#endif
 
     /* Start playing */
     gst_element_set_state(pipeline, GST_STATE_PLAYING);

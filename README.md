@@ -22,5 +22,6 @@ Pour lire une vidéo nous utilisons l'element `filesrc` qui permet de lire une v
 
 Les pipelines sont des fichier `.bat` qui permettent de lancer les pipelines. Pour les lancer il suffit de double cliquer dessus.
 Nous avons aussi build le pipeline1 en un executable `main.exe` qui permet de lancer le pipeline1 sous windows et `main` qui permet de lancer le pipeline1 sous linux.
-le fichier `main.c` est le fichier source du programme `main.exe` qui contient le code c du programme qui lance le pipeline1.
+Le fichier `main.c` est le fichier source du programme `main.exe` qui contient le code c du programme qui lance le pipeline1.
+Vous pouvez build le programme en lancant la commande ``gcc basic-tutorial-1.c -o basic-tutorial-1 `pkg-config --cflags --libs gstreamer-1.0` ``
 Lorsque vous lancerez le pipeline1 un fichier `video.avi` sera créé dans le dossier courant. Ce fichier contiendra la vidéo enregistrée par le pipeline1, ouvrez cette video avec [vlc](https://www.videolan.org/vlc/) pour la lire.
